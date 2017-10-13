@@ -1,1 +1,1 @@
-# android-style-guide
+WC Android Style Guide
