@@ -3,6 +3,13 @@
 ## Dependencies
 - [Java Style Guide](https://github.com/whitecloakph/android-style-guide)
 
+## Inspiration
+
+This style-guide is somewhat of a mash-up between the existing Java language style guides. The language guidance is drawn from the following:
+
++ [Android Buffer App Style Guide](https://github.com/bufferapp/android-guidelines)
++ [Ribot Android Style Guide](httpshttps://github.com/ribot/android-guidelines)
+
 ## File Naming
 
 ### Class
