@@ -166,7 +166,7 @@ As a general rule you should try to group similar attributes together. A good wa
 
 ## Tests
 
-### Espresso Tests
+### Espresso Tests or Robolectric Tests
 
 Every Espresso test class usually targets an Activity, therefore the name should match the name of the targeted Activity followed by `Test`, e.g. `SignInActivityTest`
 
