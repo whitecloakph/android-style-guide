@@ -19,7 +19,9 @@ This style-guide is somewhat of a mash-up between the existing Java language sty
 - [Annotations](#annotations)
 - [Tests](#tests)
 
-## File Naming
+## Project Guidelines
+
+### File Naming
 
 ### Class
 
