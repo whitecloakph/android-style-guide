@@ -10,6 +10,15 @@ This style-guide is somewhat of a mash-up between the existing Java language sty
 + [Android Buffer App Style Guide](https://github.com/bufferapp/android-guidelines)
 + [Ribot Android Style Guide](https://github.com/ribot/android-guidelines)
 
+## Table of Contents
+
+- [File Naming](#file-naming)
+- [XML Style Rules](#xml-style-rules)
+- [Java Language Rules](#java-language-rules)
+- [Java Style Rules](#java-style-rules)
+- [Annotations](#annotations)
+- [Tests](#tests)
+
 ## File Naming
 
 ### Class
@@ -171,9 +180,11 @@ As a general rule you should try to group similar attributes together. A good wa
 4. Other layout attributes, sorted alphabetically
 5. Remaining attributes, sorted alphabetically
 
-## Java Language Rules for Android
+## Code Guidelines
 
-### Never ignore exceptions
+### Java Language Rules
+
+#### Never ignore exceptions
 
 Avoid not handling exceptions in the correct manner. For example:
 
@@ -202,7 +213,9 @@ Here we handle the error appropriately by:
 - Setting a default value for the variable if possible
 - Throw an appropriate exception
 
-### Never catch generic exceptions
+
+#### Never catch generic exceptions
+
 
 Catching exceptions generally should not be done:
 
@@ -232,7 +245,7 @@ Instead, catch the expected exception and handle it accordingly:
 	}
 
 
-### Grouping exceptions
+#### Grouping exceptions
 
 Where exceptions execute the same code, they should be grouped in-order to increase readability and avoid code duplication. For example, where you may do this:
 
@@ -261,16 +274,20 @@ You could do this:
     		// Show some dialog
         }
 	}
-	
-### Using try-catch over throw exception
+
+
+#### Using try-catch over throw exception
 
 Using try-catch statements improves the readability of the code where the exception is taking place. This is because the error is handled where it occurs, making it easier to both debug or make a change to how the error is handled.
 
-### Never use Finalizers
+
+#### Never use Finalizers
 
 *There are no guarantees as to when a finalizer will be called, or even that it will be called at all. In most cases, you can do what you need from a finalizer with good exception handling. If you absolutely need it, define a close() method (or the like) and document exactly when that method needs to be called. See InputStreamfor an example. In this case it is appropriate but not required to print a short log message from the finalizer, as long as it is not expected to flood the logs.* - taken from the Android code style guidelines
 
-### Fully qualify imports
+
+
+#### Fully qualify imports
 
 When declaring imports, use the full package declaration. For example:
 
@@ -283,14 +300,15 @@ Instead, do this 😃
 
 
     import android.support.v7.widget.RecyclerView;
-    
-### Don't keep unused imports
 
-Sometimes removing code from a class can mean that some imports are no longer needed. If this is the case then the corresponding imports should be removed alongside the code
 
-## Java Style Rules
+#### Don't keep unused imports
 
-### Field definition and naming
+Sometimes removing code from a class can mean that some imports are no longer needed. If this is the case then the corresponding imports should be removed alongside the code.
+
+### Java Style Rules
+
+#### Field definition and naming
 
 All fields should be declared at the top of the file, following these rules:
 
@@ -335,7 +353,8 @@ why not just give the field a meaningful name in the first place, rather than le
 
 That's much better!
 
-### View Field Naming
+
+#### View Field Naming
 
 When naming fields that reference views, the name of the view should be the last word in the name. For example:
 
@@ -350,7 +369,7 @@ We name views in this way so that we can easily identify what the field correspo
 
 Previously, the names for views often ended in the view type (e.g acceptLoginButton) but quite often views change and it's easy to forgot to go back to java classes and update variable names.
 
-### Avoid naming with container types
+#### Avoid naming with container types
 
 Leading on from the above, we should also avoid the use of container type names when creating variables for collections. For example, say we have an arraylist containing a list of userIds:
 
@@ -364,7 +383,8 @@ Don't:
 
 If and when container names change in the future, the naming of these can often get forgotten about - and just like view naming, it's not entirely necessary. Correct naming of the container itself should provide enough information for what it is.
 
-### Avoid similar naming
+
+#### Avoid similar naming
 
 Naming variables, method and / or classes with similar names can make it confusing for other developers reading over your code. For example:
 
@@ -374,7 +394,7 @@ Naming variables, method and / or classes with similar names can make it confusi
 
 Distinguishing the difference between these at a first glance can be hard to understand what is what. Naming these in a clearer way can make it easier for developers to navigate the fields in your code.
 
-### Number series naming
+#### Number series naming
 
 When Android Studio auto-generates code for us, it's easy to leave things as they are - even when it generate horribly named parameters! For example, this isn't very nice:
 
@@ -386,7 +406,7 @@ It's hard to understand what these parameters do without reading the code. Inste
 
 That makes it much easier to understand! Now we'll be able to read the code following the parameter with a much clearer understanding 🙂
 
-### Pronouncable names
+#### Pronouncable names
 
 When naming fields, methods and classes they should:
 
@@ -398,7 +418,8 @@ When naming fields, methods and classes they should:
 
 - Not use Hungarian notation: Hungarian notation goes against the three points made above, so it should never be used!
 
-### Treat acronyms as words
+
+#### Treat acronyms as words
 
 Any acronyms for class names, variable names etc should be treated as words - this applies for any capitalisation used for any of the letters. For example:
 
@@ -410,7 +431,45 @@ Any acronyms for class names, variable names etc should be treated as words - th
 | parseHtml       | parseHTML       |
 | generateXmlFile | generateXMLFile |
 
-### Use standard brace style
+
+#### Avoid justifying variable declarations
+
+Any declaration of variables should not use any special form of alignment, for example:
+
+This is fine:
+
+    private int userId = 8;
+    private int count = 0;
+    private String username = "hitherejoe";
+
+Avoid doing this:
+
+    private String username = "hitherejoe";
+    private int userId      = 8;
+    private int count       = 0;
+
+This creates a stream of whitespace which is known to make text difficult to read for certain learning difficulties.
+
+#### Use spaces for indentation
+
+
+For blocks, 4 space indentation should be used:
+
+
+    if (userSignedIn) {
+        count = 1;
+    }
+
+Whereas for line wraps, 8 spaces should be used:
+
+
+    String userAboutText =
+            "This is some text about the user and it is pretty long, can you see!"
+
+
+### If-Statements
+
+#### Use standard brace style
 
 Braces should always be used on the same line as the code before them. For example, avoid doing this:
 
@@ -451,7 +510,7 @@ And instead, do this:
 
 Not only is the extra line for the space not really necessary, but it makes blocks easier to follow when reading the code.
 
-### Inline if-clauses
+#### Inline if-clauses
 
 Sometimes it makes sense to use a single line for if statements. For example:
 
@@ -461,8 +520,8 @@ However, it only works for simple operations. Something like this would be bette
 
 
     if (user == null) throw new IllegalArgumentExeption("Oops, user object is required.");
-    
-### Nested if-conditions
+
+#### Nested if-conditions
 
 Where possible, if-conditions should be combined to avoid over-complicated nesting. For example:
 
@@ -484,7 +543,7 @@ Try to avoid:
 
 This makes statements easier to read and removes the unnecessary extra lines from the nested clauses.
 
-### Ternary Operators
+#### Ternary Operators
 
 Where appropriate, ternary operators can be used to simplify operations.
 
@@ -504,9 +563,9 @@ and takes up far fewer lines of code than this:
 
 **Note:** There are some times when ternary operators should not be used. If the if-clause logic is complex or a large number of characters then a standard brace style should be used.
 
-## Annotations
+### Annotations
 
-### Annotation practices
+#### Annotation practices
 
 Taken from  the Android code style guide:
 
@@ -521,15 +580,14 @@ More information about annotation guidelines can be found here.
 Annotations should always be used where possible. For example, using the @Nullable annotation should be used in cases where a field could be expected as null. For example:
 
 
-    @Nullable 
-    TextView userNameText;
+    @Nullable TextView userNameText;
 
     private void getName(@Nullable String name) { }
-    
-    
-### Annotation style
 
-Annotations that are applied to a field, method or class should always be defined in the declaration, with only one per line:
+#### Annotation style
+
+Annotations that are applied to a method or class should always be defined in the declaration, with only one per line:
+
 
     @Annotation
     @AnotherAnnotation
@@ -542,27 +600,29 @@ Annotations that are applied to a field, method or class should always be define
 
     }
 
-    @Bind(R.id.layout_coordinator) 
-    CoordinatorLayout coordinatorLayout;
+When using the annotations on fields, you should ensure that the annotation remains on the same line whilst there is room. For example:
 
-    @Inject 
-    MainPresenter mainPresenter;
+
+    @Bind(R.id.layout_coordinator) CoordinatorLayout coordinatorLayout;
+
+
+    @Inject MainPresenter mainPresenter;
 
 
 We do this as it makes the statement easier to read. For example, the statement '@Inject SomeComponent mSomeName' reads as 'inject this component with this name'.
 
-### Limit variable scope
+#### Limit variable scope
 
 The scope of local variables should be kept to a minimum (Effective Java Item 29). By doing so, you increase the readability and maintainability of your code and reduce the likelihood of error. Each variable should be declared in the innermost block that encloses all uses of the variable.
 
 Local variables should be declared at the point they are first used. Nearly every local variable declaration should contain an initializer. If you don't yet have enough information to initialize a variable sensibly, you should postpone the declaration until you do. - taken from the Android code style guidelines
 
 
-### Unused elements
+#### Unused elements
 
 All unused **fields**, **imports**, **methods** and **classes** should be removed from the code base unless there is any specific reasoning behind keeping it there.
 
-### Order Import Statements
+#### Order Import Statements
 
 Because we use Android Studio, so imports should always be ordered automatically. However, in the case that they may not be, then they should be ordered as follows:
 
@@ -577,7 +637,7 @@ Because we use Android Studio, so imports should always be ordered automatically
 - Imports should be alphabetically ordered within each grouping, with capital letters before lower case letters (e.g. Z before a)
 - There should be a blank line between each major grouping (android, com, JUnit, net, org, java, javax)
 
-### Logging
+#### Logging
 
 Logging should be used to log useful error messages and/or other information that may be useful during development.
 
@@ -605,7 +665,7 @@ All verbose and debug logs must be disabled on release builds. On the other hand
 
 **Note:** Timber is the preferred logging method to be used. It handles the tagging for us, which saves us keeping a reference to a TAG.
 
-### Field Ordering
+#### Field Ordering
 
 Any fields declared at the top of a class file should be ordered in the following order:
 
@@ -638,9 +698,11 @@ For example:
 
 Using this ordering convention helps to keep field declarations grouped, which increases both the locating of and readability of said fields.
 
-### Class member ordering
+#### Class member ordering
 
-There is no single correct solution for this but using a __logical__ and __consistent__ order will improve code learnability and readability. It is recommendable to use the following order:
+
+To improve code readability, it’s important to organise class members in a logical manner. The following order should be used to achieve this:
+
 
 1. Constants
 2. Fields
@@ -650,144 +712,465 @@ There is no single correct solution for this but using a __logical__ and __consi
 6. Private methods
 7. Inner classes or interfaces
 
-Example:
+For example:
 
-```java
-public class MainActivity extends Activity {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
+    public class MainActivity extends Activity {
 
-    private String mTitle;
-    private TextView mTextViewTitle;
+        private int count;
 
-    @Override
-    public void onCreate() {
-        ...
-    }
+        public static newInstance() { }
 
-    public void setTitle(String title) {
-    	mTitle = title;
-    }
+        @Override
+        public void onCreate() { }
 
-    private void setUpView() {
-        ...
-    }
+        public setUsername() { }
 
-    static class AnInnerClass {
+        private void setupUsername() { }
+
+        static class AnInnerClass { }
+
+        interface SomeInterface { }
 
     }
 
-}
-```
+Any lifecycle methods used in Android framework classes should be ordered in the corresponding lifecycle order. For example:
 
-If your class is extending an __Android component__ such as an Activity or a Fragment, it is a good practice to order the override methods so that they __match the component's lifecycle__. For example, if you have an Activity that implements `onCreate()`, `onDestroy()`, `onPause()` and `onResume()`, then the correct order is:
 
-```java
-public class MainActivity extends Activity {
+    public class MainActivity extends Activity {
 
-	//Order matches Activity lifecycle
-    @Override
-    public void onCreate() {}
+        // Field and constructors
 
-    @Override
-    public void onResume() {}
+        @Override
+        public void onCreate() { }
 
-    @Override
-    public void onPause() {}
+        @Override
+        public void onStart() { }
 
-    @Override
-    public void onDestroy() {}
+        @Override
+        public void onResume() { }
 
-}
-```
+        @Override
+        public void onPause() { }
 
-### Parameter ordering in methods
+        @Override
+        public void onStop() { }
 
-When programming for Android, it is quite common to define methods that take a `Context`. If you are writing a method like this, then the __Context__ must be the __first__ parameter.
+        @Override
+        public void onRestart() { }
 
-The opposite case are __callback__ interfaces that should always be the __last__ parameter.
+        @Override
+        public void onDestroy() { }
 
-Examples:
+        // public methods, private methods, inner classes and interfaces
 
-```java
-// Context always goes first
-public User loadUser(Context context, int userId);
+    }
 
-// Callbacks always go last
-public void loadUserAsync(Context context, int userId, UserCallback callback);
-```
+#### Method parameter ordering
 
-### String constants, naming, and values
+When defining methods, parameters should be ordered to the following convention:
 
-Many elements of the Android SDK such as `SharedPreferences`, `Bundle`, or `Intent` use a key-value pair approach so it's very likely that even for a small app you end up having to write a lot of String constants.
+    public Post loadPost(Context context, int postId);
 
-When using one of these components, you __must__ define the keys as a `static final` fields and they should be prefixed as indicated below.
 
-| Element            | Field Name Prefix |
-| -----------------  | ----------------- |
-| SharedPreferences  | `PREF_`             |
-| Bundle             | `BUNDLE_`           |
-| Fragment Arguments | `ARGUMENT_`         |
-| Intent Extra       | `EXTRA_`            |
-| Intent Action      | `ACTION_`           |
+    public void loadPost(Context context, int postId, Callback callback);
 
-Note that the arguments of a Fragment - `Fragment.getArguments()` - are also a Bundle. However, because this is a quite common use of Bundles, we define a different prefix for them.
+**Context** parameters always go first and **Callback** parameters always go last.
 
-Example:
+#### String constants, naming, and values
 
-```java
-// Note the value of the field is the same as the name to avoid duplication issues
-static final String PREF_EMAIL = "PREF_EMAIL";
-static final String BUNDLE_AGE = "BUNDLE_AGE";
-static final String ARGUMENT_USER_ID = "ARGUMENT_USER_ID";
+When using string constants, they should be declared as final static and use the follow conventions:
 
-// Intent-related items use full package name as value
-static final String EXTRA_SURNAME = "com.myapp.extras.EXTRA_SURNAME";
-static final String ACTION_OPEN_USER = "com.myapp.action.ACTION_OPEN_USER";
-```
+[Strings table]
 
-### Arguments in Fragments and Activities
+#### Enums
 
-When data is passed into an `Activity` or `Fragment` via an `Intent` or a `Bundle`, the keys for the different values __must__ follow the rules described in the section above.
+Enums should only be used where actually required. If another method is possible, then that should be the preferred way of approaching the implementation. For example:
 
-When an `Activity` or `Fragment` expects arguments, it should provide a `public static` method that facilitates the creation of the relevant `Intent` or `Fragment`.
+Instead of this:
 
-In the case of Activities the method is usually called `getStartIntent()`:
 
-```java
-public static Intent getStartIntent(Context context, User user) {
-	Intent intent = new Intent(context, ThisActivity.class);
-	intent.putParcelableExtra(EXTRA_USER, user);
-	return intent;
-}
-```
+    public enum SomeEnum {
+        ONE, TWO, THREE
+    }
 
-For Fragments it is named `newInstance()` and handles the creation of the Fragment with the right arguments:
+Do this:
 
-```java
-public static UserFragment newInstance(User user) {
-	UserFragment fragment = new UserFragment();
-	Bundle args = new Bundle();
-	args.putParcelable(ARGUMENT_USER, user);
-	fragment.setArguments(args)
-	return fragment;
-}
-```
+    private static final int VALUE_ONE = 1;
+    private static final int VALUE_TWO = 2;
+    private static final int VALUE_THREE = 3;
 
-__Note 1__: These methods should go at the top of the class before `onCreate()`.
+#### Arguments in fragments and activities
 
-__Note 2__: If we provide the methods described above, the keys for extras and arguments should be `private` because there is not need for them to be exposed outside the class.
+When we pass data using an Intent or Bundle, the keys for the values must use the conventions defined below:
 
-## Tests
+**Activity**
 
-### Espresso Tests or Robolectric Tests
+Passing data to an activity must be done using a reference to a KEY, as defined as below:
 
-Every Espresso test class usually targets an Activity, therefore the name should match the name of the targeted Activity followed by `Test`, e.g. `SignInActivityTest`
 
-When using the Espresso API it is a common practice to place chained methods in new lines.
+    private static final String KEY_NAME = "com.your.package.name.to.activity.KEY_NAME";
 
-```java
-onView(withId(R.id.view))
-        .perform(scrollTo())
-        .check(matches(isDisplayed()))
-```
+**Fragment**
+
+Passing data to a fragment must be done using a reference to an EXTRA, as defined as below:
+
+
+    private static final String EXTRA_NAME = "EXTRA_NAME";
+
+When creating new instances of a fragment or activity that involves passing data, we should provide a static method to retrieve the new instance, passing the data as method parameters. For example:
+
+**Activity**
+
+    public static Intent getStartIntent(Context context, Post post) {
+        Intent intent = new Intent(context, CurrentActivity.class);
+        intent.putParcelableExtra(EXTRA_POST, post);
+        return intent;
+    }
+
+**Fragment**
+
+    public static PostFragment newInstance(Post post) {
+        PostFragment fragment = new PostFragment();
+        Bundle args = new Bundle();
+        args.putParcelable(ARGUMENT_POST, post);
+        fragment.setArguments(args)
+        return fragment;
+    }
+
+#### Line Length Limit
+
+Code lines should exceed no longer than 100 characters, this makes the code more readable. Sometimes to achieve this, we may need to:
+
+
+- Extract data to a local variable
+- Extract logic to an external method
+- Line-wrap code to separate a single line of code to multiple lines
+
+**Note:** For code comments and import statements it’s ok to exceed the 100 character limit.
+
+#### Line-wrapping techniques
+
+When it comes to line-wraps, there’s a few situations where we should be consistent in the way we format code.
+
+**Breaking at Operators**
+
+When we need to break a line at an operator, we break the line before the operator:
+
+
+    int count = countOne + countTwo - countThree + countFour * countFive - countSix
+            + countOnANewLineBecauseItsTooLong;
+
+If desirable, you can always break after the `=` sign:
+
+
+    int count =
+            countOne + countTwo - countThree + countFour * countFive + countSix;
+
+**Method Chaining**
+
+When it comes to method chaining, each method call should be on a new line.
+
+Don’t do this:
+
+
+    Picasso.with(context).load("someUrl").into(imageView);
+
+Instead, do this:
+
+
+    Picasso.with(context)
+            .load("someUrl")
+            .into(imageView);
+
+**Long Parameters**
+
+In the case that a method contains long parameters, we should line break where appropriate. For example when declaring a method we should break after the last comma of the parameter that fits:
+
+
+    private void someMethod(Context context, String someLongStringName, String text,
+                                long thisIsALong, String anotherString) {               
+    }             
+
+And when calling that method we should break after the comma of each parameter:
+
+
+    someMethod(context,
+            "thisIsSomeLongTextItsQuiteLongIsntIt",
+            "someText",
+            01223892365463456,
+            "thisIsSomeLongTextItsQuiteLongIsntIt");
+
+
+#### Method spacing
+
+There only needs to be a single line space between methods in a class, for example:
+
+Do this:
+
+
+    public String getUserName() {
+        // Code
+    }
+
+    public void setUserName(String name) {
+        // Code
+    }
+
+    public boolean isUserSignedIn() {
+        // Code
+    }
+
+Not this:
+
+
+    public String getUserName() {
+        // Code
+    }
+
+
+    public void setUserName(String name) {
+        // Code
+    }
+
+
+    public boolean isUserSignedIn() {
+        // Code
+    }
+
+### Comments
+
+#### Inline comments
+
+Where necessary, inline comments should be used to provide a meaningful description to the reader on what a specific piece of code does. They should only be used in situations where the code may be complex to understand. In most cases however, code should be written in a way that it easy to understand without comments 🙂
+
+**Note:** Code comments do not have to, but should try to, stick to the 100 character rule.
+
+#### JavaDoc Style Comments
+
+
+Whilst a method name should usually be enough to communicate a methods functionality, it can sometimes help to provide JavaDoc style comments. This helps the reader to easily understand the methods functionality, as well as the purpose of any parameters that are being passed into the method.
+
+
+    /**
+     * Authenticates the user against the API given a User id.
+     * If successful, this returns a success result
+     *
+     * @param userId The user id of the user that is to be authenticated.
+     */
+
+#### Class comments
+
+When creating class comments they should be meaningful and descriptive, using links where necessary. For example:
+
+
+    /**
+      * RecyclerView adapter to display a list of {@link Post}.
+      * Currently used with {@link PostRecycler} to show the list of Post items.
+      */
+
+Don’t leave author comments, these aren’t useful and provide no real meaningful information when multiple people are to be working on the class.
+
+
+    /**
+      * Created By Joe 18/06/2016
+      */
+
+### Sectioning code
+
+#### Java code
+
+If creating ‘sections’ for code, this should be done using the following approach, like this:
+
+
+    public void method() { }
+
+    public void someOtherMethod() { }
+
+    /* Mvp Method Implementations */
+
+    public void anotherMethod() { }
+
+    /* Helper Methods */
+
+    public void someMethod() { }
+
+Not like this:
+
+
+    public void method() { }
+
+    public void someOtherMethod() { }
+
+    // Mvp Method Implementations
+
+    public void anotherMethod() { }
+
+This makes sectioned methods easier to located in a class.
+
+#### Strings file
+
+String resources defined within the string.xml file should be section by feature, for example:
+
+
+    // User Profile Activity
+    <string name="button_save">Save</string>
+    <string name="button_cancel">Cancel</string>
+
+    // Settings Activity
+    <string name="message_instructions">...</string>
+
+Not only does this help keep the strings file tidy, but it makes it easier to find strings when they need altering.
+
+#### RxJava chaining
+
+When chaining Rx operations, every operator should be on a new line, breaking the line before the period `.` . For example:
+
+
+    return dataManager.getPost()
+                .concatMap(new Func1<Post, Observable<? extends Post>>() {
+                    @Override
+                     public Observable<? extends Post> call(Post post) {
+                         return mRetrofitService.getPost(post.id);
+                     }
+                })
+                .retry(new Func2<Integer, Throwable, Boolean>() {
+                     @Override
+                     public Boolean call(Integer numRetries, Throwable throwable) {
+                         return throwable instanceof RetrofitError;
+                     }
+                });
+
+This makes it easier to understand the flow of operation within an Rx chain of calls.
+
+### Butterknife
+
+#### Event listeners
+
+Where possible, make use of Butterknife listener bindings. For example, when listening for a click event instead of doing this:
+
+
+    mSubmitButton.setOnClickListener(new View.OnClickListener() {
+        public void onClick(View v) {
+            // Some code here...
+        }
+      };
+
+Do this:
+
+
+    @OnClick(R.id.button_submit)
+    public void onSubmitButtonClick() { }
+
+## Tests style rules
+
+### Unit tests
+
+Any Unit Test classes should be written to match the name of the class that the test are targeting, followed by the Test suffix. For example:
+
+| Class                | Test Class               |
+|----------------------|--------------------------|
+| DataManager          | DataManagerTest          |
+| UserProfilePresenter | UserProfilePresenterTest |
+| PreferencesHelper    | PreferencesHelperTest    |
+
+All Test methods should be annotated with the `@Test` annotation, the methods should be named using the following template:
+
+
+    @Test
+    public void methodNamePreconditionExpectedResult() { }
+
+So for example, if we want to check that the signUp() method with an invalid email address fails, the test would look like:
+
+
+    @Test
+    public void signUpWithInvalidEmailFails() { }
+
+Tests should focus on testing only what the method name entitles, if there’s extra conditions being tested in your Test method then this should be moved to it’s own individual test.
+
+If a class we are testing contains many different methods, then the tests should be split across multiple test classes - this helps to keep the tests more maintainable and easier to locate. For example, a DatabaseHelper class may need to be split into multiple test classes such as :
+
+
+    DatabaseHelperUserTest
+    DatabaseHelperPostsTest
+    DatabaseHelperDraftsTest
+
+### Espresso tests
+
+Each Espresso test class generally targets an Activity, so the name given to it should match that of the targeted Activity, again followed by Test. For example:
+
+| Class                | Test Class               |
+|----------------------|--------------------------|
+| MainActivity         | MainActivityTest         |
+| ProfileActivity      | ProfileActivityTest      |
+| DraftsActivity       | DraftsActivityTest       |
+
+When using the Espresso API, methods should be chained on new lines to make the statements more readable, for example:
+
+
+    onView(withId(R.id.text_title))
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
+
+Chaining calls in this style not only helps us stick to less than 100 characters per line but it also makes it easy to read the chain of events taking place in espresso tests.
+
+
+## Gradle Style
+
+## Dependencies
+
+### Versioning
+
+Where applicable, versioning that is shared across multiple dependencies should be defined as a variable within the dependencies scope. For example:
+
+
+    final SUPPORT_LIBRARY_VERSION = '23.4.0'
+
+    compile "com.android.support:support-v4:$SUPPORT_LIBRARY_VERSION"
+    compile "com.android.support:recyclerview-v7:$SUPPORT_LIBRARY_VERSION"
+    compile "com.android.support:support-annotations:$SUPPORT_LIBRARY_VERSION"
+    compile "com.android.support:design:$SUPPORT_LIBRARY_VERSION"
+    compile "com.android.support:percent:$SUPPORT_LIBRARY_VERSION"
+    compile "com.android.support:customtabs:$SUPPORT_LIBRARY_VERSION"
+
+This makes it easy to update dependencies in the future as we only need to change the version number once for multiple dependencies.
+
+### Grouping
+
+Where applicable, dependencies should be grouped by package name, with spaces in-between the groups. For example:
+
+
+    compile "com.android.support:percent:$SUPPORT_LIBRARY_VERSION"
+    compile "com.android.support:customtabs:$SUPPORT_LIBRARY_VERSION"
+
+    compile 'io.reactivex:rxandroid:1.2.0'
+    compile 'io.reactivex:rxjava:1.1.5'
+
+    compile 'com.jakewharton:butterknife:7.0.1'
+    compile 'com.jakewharton.timber:timber:4.1.2'
+
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+
+
+`compile` , `testCompile` and `androidTestCompile`  dependencies should also be grouped into their corresponding section. For example:
+
+
+    // App Dependencies
+    compile "com.android.support:support-v4:$SUPPORT_LIBRARY_VERSION"
+    compile "com.android.support:recyclerview-v7:$SUPPORT_LIBRARY_VERSION"
+
+    // Instrumentation test dependencies
+    androidTestCompile "com.android.support:support-annotations:$SUPPORT_LIBRARY_VERSION"
+
+    // Unit tests dependencies
+    testCompile 'org.robolectric:robolectric:3.0'
+
+Both of these approaches makes it easy to locate specific dependencies when required as it keeps dependency declarations both clean and tidy 🙌
+
+
+### Independent Dependencies
+
+Where dependencies are only used individually for application or test purposes, be sure to only compile them using `compile` , `testCompile` or `androidTestCompile` . For example, where the robolectric dependency is only required for unit tests, it should be added using:
+
+
+    testCompile 'org.robolectric:robolectric:3.0'
