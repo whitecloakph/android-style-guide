@@ -13,12 +13,18 @@ This style-guide is somewhat of a mash-up between the existing Java language sty
 ## Table of Contents
 
 - [File Naming](#file-naming)
- + [Class Files](#class-files)
- + [Resource Files](#resource-files)
-  + [Drawable Files](#drawable-files)
-  + [Layout Files](#layout-files)
-  + [Menu Files](#menu-files)
+  - [Class Files](#class-files)
+  - [Resource Files](#resource-files)
+    - [Drawable Files](#drawable-files)
+    - [Layout Files](#layout-files)
+    - [Menu Files](#menu-files)
 - [XML Style Rules](#xml-style-rules)
+  - [Use self closing tags](#use-self-closing-tags)
+  - [Resources Naming](#resource-naming)
+    - [IDs](#id)
+    - [Strings](#strings)
+    - [Styles and Themes](#styles-and-themes)
+  - [Attributes ordering](#attributes-ordering)
 
 ## Project Guidelines
 
@@ -126,7 +132,7 @@ This is __bad__ :
 
 Resource IDs and names are written in __lowercase_underscore__.
 
-### ID naming
+#### ID
 
 IDs should be prefixed with the name of the element in lowercase underscore. For example:
 
@@ -156,7 +162,7 @@ Menu example:
 </menu>
 ```
 
-### Strings
+#### Strings
 
 String names start with a prefix that identifies the section they belong to. For example `registration_email_hint` or `registration_name_hint`. If a string __doesn't belong__ to any section, then you should follow the rules below:
 
@@ -169,7 +175,7 @@ String names start with a prefix that identifies the section they belong to. For
 | `action_`            | An action such as "Save" or "Create"  |
 
 
-### Styles and Themes
+#### Styles and Themes
 
 Unlike the rest of resources, style names are written in __UpperCamelCase__.
 
