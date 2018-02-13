@@ -171,6 +171,87 @@ As a general rule you should try to group similar attributes together. A good wa
 4. Other layout attributes, sorted alphabetically
 5. Remaining attributes, sorted alphabetically
 
+## Java Style Rules
+
+### Class member ordering
+
+There is no single correct solution for this but using a __logical__ and __consistent__ order will improve code learnability and readability. It is recommendable to use the following order:
+
+1. Constants
+2. Fields
+3. Constructors
+4. Override methods and callbacks (public or private)
+5. Public methods
+6. Private methods
+7. Inner classes or interfaces
+
+Example:
+
+```java
+public class MainActivity extends Activity {
+
+    private static final String TAG = MainActivity.class.getSimpleName();
+
+    private String mTitle;
+    private TextView mTextViewTitle;
+
+    @Override
+    public void onCreate() {
+        ...
+    }
+
+    public void setTitle(String title) {
+    	mTitle = title;
+    }
+
+    private void setUpView() {
+        ...
+    }
+
+    static class AnInnerClass {
+
+    }
+
+}
+```
+
+If your class is extending an __Android component__ such as an Activity or a Fragment, it is a good practice to order the override methods so that they __match the component's lifecycle__. For example, if you have an Activity that implements `onCreate()`, `onDestroy()`, `onPause()` and `onResume()`, then the correct order is:
+
+```java
+public class MainActivity extends Activity {
+
+	//Order matches Activity lifecycle
+    @Override
+    public void onCreate() {}
+
+    @Override
+    public void onResume() {}
+
+    @Override
+    public void onPause() {}
+
+    @Override
+    public void onDestroy() {}
+
+}
+```
+
+### Parameter ordering in methods
+
+When programming for Android, it is quite common to define methods that take a `Context`. If you are writing a method like this, then the __Context__ must be the __first__ parameter.
+
+The opposite case are __callback__ interfaces that should always be the __last__ parameter.
+
+Examples:
+
+```java
+// Context always goes first
+public User loadUser(Context context, int userId);
+
+// Callbacks always go last
+public void loadUserAsync(Context context, int userId, UserCallback callback);
+```
+
 ### String constants, naming, and values
 
 Many elements of the Android SDK such as `SharedPreferences`, `Bundle`, or `Intent` use a key-value pair approach so it's very likely that even for a small app you end up having to write a lot of String constants.
@@ -199,6 +280,38 @@ static final String ARGUMENT_USER_ID = "ARGUMENT_USER_ID";
 static final String EXTRA_SURNAME = "com.myapp.extras.EXTRA_SURNAME";
 static final String ACTION_OPEN_USER = "com.myapp.action.ACTION_OPEN_USER";
 ```
+
+### Arguments in Fragments and Activities
+
+When data is passed into an `Activity` or `Fragment` via an `Intent` or a `Bundle`, the keys for the different values __must__ follow the rules described in the section above.
+
+When an `Activity` or `Fragment` expects arguments, it should provide a `public static` method that facilitates the creation of the relevant `Intent` or `Fragment`.
+
+In the case of Activities the method is usually called `getStartIntent()`:
+
+```java
+public static Intent getStartIntent(Context context, User user) {
+	Intent intent = new Intent(context, ThisActivity.class);
+	intent.putParcelableExtra(EXTRA_USER, user);
+	return intent;
+}
+```
+
+For Fragments it is named `newInstance()` and handles the creation of the Fragment with the right arguments:
+
+```java
+public static UserFragment newInstance(User user) {
+	UserFragment fragment = new UserFragment();
+	Bundle args = new Bundle();
+	args.putParcelable(ARGUMENT_USER, user);
+	fragment.setArguments(args)
+	return fragment;
+}
+```
+
+__Note 1__: These methods should go at the top of the class before `onCreate()`.
+
+__Note 2__: If we provide the methods described above, the keys for extras and arguments should be `private` because there is not need for them to be exposed outside the class.
 
 ## Tests
 
