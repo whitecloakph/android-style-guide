@@ -20,7 +20,7 @@ This style-guide is somewhat of a mash-up between the existing Java language sty
     - [Menu Files](#menu-files)
 - [XML Style Rules](#xml-style-rules)
   - [Use self closing tags](#use-self-closing-tags)
-  - [Resources Naming](#resource-naming)
+  - [Resources Naming](#resources-naming)
     - [IDs](#id)
     - [Strings](#strings)
     - [Styles and Themes](#styles-and-themes)
