@@ -13,17 +13,18 @@ This style-guide is somewhat of a mash-up between the existing Java language sty
 ## Table of Contents
 
 - [File Naming](#file-naming)
+ + [Class Files](#class-files)
+ + [Resource Files](#resource-files)
+  + [Drawable Files](#drawable-files)
+  + [Layout Files](#layout-files)
+  + [Menu Files](#menu-files)
 - [XML Style Rules](#xml-style-rules)
-- [Java Language Rules](#java-language-rules)
-- [Java Style Rules](#java-style-rules)
-- [Annotations](#annotations)
-- [Tests](#tests)
 
 ## Project Guidelines
 
 ### File Naming
 
-### Class
+### Class Files
 
 Class names are written in [UpperCamelCase](http://en.wikipedia.org/wiki/CamelCase).
 
