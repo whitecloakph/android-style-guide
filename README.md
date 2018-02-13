@@ -171,7 +171,472 @@ As a general rule you should try to group similar attributes together. A good wa
 4. Other layout attributes, sorted alphabetically
 5. Remaining attributes, sorted alphabetically
 
+## Java Language Rules
+
+### Never ignore exceptions
+
+Avoid not handling exceptions in the correct manner. For example:
+
+	public void setUserId(String id) {
+    	try {
+        	mUserId = Integer.parseInt(id);
+    	} catch (NumberFormatException e) { }
+	}
+
+This gives no information to both the developer and the user, making it harder to debug and could also leave the user confused if something goes wrong. When catching an exception, we should also always log the error to the console for debugging purposes and if necessary alert the user of the issue. For example:
+
+
+	public void setCount(String count) {
+    	try {
+        	count = Integer.parseInt(id);
+    	} catch (NumberFormatException e) {
+    		count = 0;
+        	Log.e(TAG, "There was an error parsing the count " + e);
+        	DialogFactory.showErrorMessage(R.string.error_message_parsing_count);
+    	}
+	}
+
+Here we handle the error appropriately by:
+
+- Showing a message to the user notifying them that there has been an error
+- Setting a default value for the variable if possible
+- Throw an appropriate exception
+
+### Never catch generic exceptions
+
+Catching exceptions generally should not be done:
+
+
+	public void openCustomTab(Context context, Uri uri) {
+    	Intent intent = buildIntent(context, uri);
+    	try {
+        	context.startActivity(intent);
+    	} catch (Exception e) {
+        	Log.e(TAG, "There was an error opening the custom tab " + e);
+    	}
+	}
+
+Why?
+
+*Do not do this. In almost all cases it is inappropriate to catch generic Exception or Throwable (preferably not Throwable because it includes Error exceptions). It is very dangerous because it means that Exceptions you never expected (including RuntimeExceptions like ClassCastException) get caught in application-level error handling. It obscures the failure handling properties of your code, meaning if someone adds a new type of Exception in the code you're calling, the compiler won't help you realize you need to handle the error differently. In most cases you shouldn't be handling different types of exception the same way.* - taken from the Android Code Style Guidelines
+
+Instead, catch the expected exception and handle it accordingly:
+
+	public void openCustomTab(Context context, Uri uri) {
+    	Intent intent = buildIntent(context, uri);
+    	try {
+        	context.startActivity(intent);
+    	} catch (ActivityNotFoundException e) {
+        	Log.e(TAG, "There was an error opening the custom tab " + e);
+    	}
+	}
+
+
+### Grouping exceptions
+
+Where exceptions execute the same code, they should be grouped in-order to increase readability and avoid code duplication. For example, where you may do this:
+
+	public void openCustomTab(Context context, @Nullable Uri uri) {
+    	Intent intent = buildIntent(context, uri);
+    	try {
+        	context.startActivity(intent);
+    	} catch (ActivityNotFoundException e) {
+        	Log.e(TAG, "There was an error opening the custom tab " + e);
+    	} catch (NullPointerException e) {
+        	Log.e(TAG, "There was an error opening the custom tab " + e);
+    	} catch (SomeOtherException e) {
+    		// Show some dialog
+        }
+	}
+
+You could do this:
+
+	public void openCustomTab(Context context, @Nullable Uri uri) {
+    	Intent intent = buildIntent(context, uri);
+    	try {
+        	context.startActivity(intent);
+    	} catch (ActivityNotFoundException e | NullPointerException e) {
+        	Log.e(TAG, "There was an error opening the custom tab " + e);
+    	} catch (SomeOtherException e) {
+    		// Show some dialog
+        }
+	}
+	
+### Using try-catch over throw exception
+
+Using try-catch statements improves the readability of the code where the exception is taking place. This is because the error is handled where it occurs, making it easier to both debug or make a change to how the error is handled.
+
+### Never use Finalizers
+
+*There are no guarantees as to when a finalizer will be called, or even that it will be called at all. In most cases, you can do what you need from a finalizer with good exception handling. If you absolutely need it, define a close() method (or the like) and document exactly when that method needs to be called. See InputStreamfor an example. In this case it is appropriate but not required to print a short log message from the finalizer, as long as it is not expected to flood the logs.* - taken from the Android code style guidelines
+
+### Fully qualify imports
+
+When declaring imports, use the full package declaration. For example:
+
+Don’t do this:
+
+
+    import android.support.v7.widget.*;
+
+Instead, do this 😃
+
+
+    import android.support.v7.widget.RecyclerView;
+    
+### Don't keep unused imports
+
+Sometimes removing code from a class can mean that some imports are no longer needed. If this is the case then the corresponding imports should be removed alongside the code
+
 ## Java Style Rules
+
+### Field definition and naming
+
+All fields should be declared at the top of the file, following these rules:
+
+
+- Private, non-static field names should not start with m. This is right:
+
+    userSignedIn, userNameText, acceptButton
+
+Not this:
+
+    mUserSignedIn, mUserNameText, mAcceptButton
+
+
+- Private, static field names do not need to start with an s. This is right:
+
+    someStaticField, userNameText
+
+Not this:
+
+	sSomeStaticField, sUserNameText
+
+
+- All other fields also start with a lower case letter.
+
+
+    int numOfChildren;
+    String username;
+
+
+- Static final fields (known as constants) are ALL_CAPS_WITH_UNDERSCORES.
+
+
+    private static final int PAGE_COUNT = 0;
+
+Field names that do not reveal intention should not be used. For example,
+
+    int e; //number of elements in the list
+
+why not just give the field a meaningful name in the first place, rather than leaving a comment!
+
+    int numberOfElements;
+
+That's much better!
+
+### View Field Naming
+
+When naming fields that reference views, the name of the view should be the last word in the name. For example:
+
+| View           | Name              |
+|----------------|-------------------|
+| TextView       | usernameView      |
+| Button         | acceptLoginView   |
+| ImageView      | profileAvatarView |
+| RelativeLayout | profileLayout     |
+
+We name views in this way so that we can easily identify what the field corresponds to. For example, having a field named **user** is extremely ambiguous - giving it the name usernameView, userAvatarView or userProfieLayout helps to make it clear  exactly what view the field corresponds with.
+
+Previously, the names for views often ended in the view type (e.g acceptLoginButton) but quite often views change and it's easy to forgot to go back to java classes and update variable names.
+
+### Avoid naming with container types
+
+Leading on from the above, we should also avoid the use of container type names when creating variables for collections. For example, say we have an arraylist containing a list of userIds:
+
+Do:
+
+    List<String> userIds = new ArrayList<>();
+
+Don't:
+
+    List<String> userIdList = new ArrayList<>();
+
+If and when container names change in the future, the naming of these can often get forgotten about - and just like view naming, it's not entirely necessary. Correct naming of the container itself should provide enough information for what it is.
+
+### Avoid similar naming
+
+Naming variables, method and / or classes with similar names can make it confusing for other developers reading over your code. For example:
+
+	hasUserSelectedSingleProfilePreviously
+
+	hasUserSelectedSignedProfilePreviously
+
+Distinguishing the difference between these at a first glance can be hard to understand what is what. Naming these in a clearer way can make it easier for developers to navigate the fields in your code.
+
+### Number series naming
+
+When Android Studio auto-generates code for us, it's easy to leave things as they are - even when it generate horribly named parameters! For example, this isn't very nice:
+
+	public void doSomething(String s1, String s2, String s3)
+
+It's hard to understand what these parameters do without reading the code. Instead:
+
+	public void doSomething(String userName, String userEmail, String userId)
+
+That makes it much easier to understand! Now we'll be able to read the code following the parameter with a much clearer understanding 🙂
+
+### Pronouncable names
+
+When naming fields, methods and classes they should:
+
+- Be readable: Efficient naming means we'll be able to look at the name and understand it instantly, reducing cognitive load on trying to decipher what the name means.
+
+- Be speakable: Names that are speakable avoids awkward conversations where you're trying to pronounce a badly named variable name.
+
+- Be searchable: Nothing is worse than trying to search for a method or variable in a class to realise it's been spelt wrong or badly named. If we're trying to find a method that searches for a user, then searching for 'search' should bring up a result for that method.
+
+- Not use Hungarian notation: Hungarian notation goes against the three points made above, so it should never be used!
+
+### Treat acronyms as words
+
+Any acronyms for class names, variable names etc should be treated as words - this applies for any capitalisation used for any of the letters. For example:
+
+| Do              | Don't           |
+|-----------------|-----------------|
+| setUserId       | setUserID       |
+| String uri      | String URI      |
+| int id          | int ID          |
+| parseHtml       | parseHTML       |
+| generateXmlFile | generateXMLFile |
+
+### Use standard brace style
+
+Braces should always be used on the same line as the code before them. For example, avoid doing this:
+
+
+    class SomeClass
+    {
+    	private void someFunction()
+    	{
+        	if (isSomething)
+        	{
+
+        	}
+        	else if (!isSomethingElse)
+        	{
+
+        	}
+        	else
+        	{
+
+        	}
+    	}
+	}
+
+And instead, do this:
+
+
+	class SomeClass {
+    	private void someFunction() {
+        	if (isSomething) {
+
+        	} else if (!isSomethingElse) {
+
+        	} else {
+
+        	}
+    	}
+	}
+
+Not only is the extra line for the space not really necessary, but it makes blocks easier to follow when reading the code.
+
+### Inline if-clauses
+
+Sometimes it makes sense to use a single line for if statements. For example:
+
+    if (user == null) return false;
+
+However, it only works for simple operations. Something like this would be better suited with braces:
+
+
+    if (user == null) throw new IllegalArgumentExeption("Oops, user object is required.");
+    
+### Nested if-conditions
+
+Where possible, if-conditions should be combined to avoid over-complicated nesting. For example:
+
+Do:
+
+
+    if (userSignedIn && userId != null) {
+
+    }
+
+Try to avoid:
+
+
+    if (userSignedIn) {
+        if (userId != null) {
+
+        }
+    }
+
+This makes statements easier to read and removes the unnecessary extra lines from the nested clauses.
+
+### Ternary Operators
+
+Where appropriate, ternary operators can be used to simplify operations.
+
+For example, this is easy to read:
+
+
+    userStatusImage = signedIn ? R.drawable.ic_tick : R.drawable.ic_cross;
+
+and takes up far fewer lines of code than this:
+
+
+    if (signedIn) {
+        userStatusImage = R.drawable.ic_tick;
+    } else {
+        userStatusImage = R.drawable.ic_cross;
+    }
+
+**Note:** There are some times when ternary operators should not be used. If the if-clause logic is complex or a large number of characters then a standard brace style should be used.
+
+## Annotations
+
+### Annotation practices
+
+Taken from  the Android code style guide:
+
+**@Override:** The @Override annotation must be used whenever a method overrides the declaration or implementation from a super-class. For example, if you use the @inheritdocs Javadoc tag, and derive from a class (not an interface), you must also annotate that the method @Overrides the parent class's method.
+
+**@SuppressWarnings:** The @SuppressWarnings annotation should only be used under circumstances where it is impossible to eliminate a warning. If a warning passes this "impossible to eliminate" test, the @SuppressWarnings annotation must be used, so as to ensure that all warnings reflect actual problems in the code.
+
+More information about annotation guidelines can be found here.
+
+----------
+
+Annotations should always be used where possible. For example, using the @Nullable annotation should be used in cases where a field could be expected as null. For example:
+
+
+    @Nullable 
+    TextView userNameText;
+
+    private void getName(@Nullable String name) { }
+    
+    
+### Annotation style
+
+Annotations that are applied to a field, method or class should always be defined in the declaration, with only one per line:
+
+    @Annotation
+    @AnotherAnnotation
+    public class SomeClass {
+
+      @SomeAnotation
+      public String getMeAString() {
+
+      }
+
+    }
+
+    @Bind(R.id.layout_coordinator) 
+    CoordinatorLayout coordinatorLayout;
+
+    @Inject 
+    MainPresenter mainPresenter;
+
+
+We do this as it makes the statement easier to read. For example, the statement '@Inject SomeComponent mSomeName' reads as 'inject this component with this name'.
+
+### Limit variable scope
+
+The scope of local variables should be kept to a minimum (Effective Java Item 29). By doing so, you increase the readability and maintainability of your code and reduce the likelihood of error. Each variable should be declared in the innermost block that encloses all uses of the variable.
+
+Local variables should be declared at the point they are first used. Nearly every local variable declaration should contain an initializer. If you don't yet have enough information to initialize a variable sensibly, you should postpone the declaration until you do. - taken from the Android code style guidelines
+
+
+### Unused elements
+
+All unused **fields**, **imports**, **methods** and **classes** should be removed from the code base unless there is any specific reasoning behind keeping it there.
+
+### Order Import Statements
+
+Because we use Android Studio, so imports should always be ordered automatically. However, in the case that they may not be, then they should be ordered as follows:
+
+
+1. Android imports
+2. Imports from third parties
+3. java and javax imports
+4. Imports from the current Project
+
+**Note:**
+
+- Imports should be alphabetically ordered within each grouping, with capital letters before lower case letters (e.g. Z before a)
+- There should be a blank line between each major grouping (android, com, JUnit, net, org, java, javax)
+
+### Logging
+
+Logging should be used to log useful error messages and/or other information that may be useful during development.
+
+
+| Log                               | Reason      |
+|-----------------------------------|-------------|
+| Log.v(String tag, String message) | verbose     |
+| Log.d(String tag, String message) | debug       |
+| Log.i(String tag, String message) | information |
+| Log.w(String tag, String message) | warning     |
+| Log.e(String tag, String message) | error       |
+
+
+We can set the `Tag` for the log as a `static final` field at the top of the class, for example:
+
+
+    private static final String TAG = MyActivity.class.getName();
+
+All verbose and debug logs must be disabled on release builds. On the other hand - information, warning and error logs should only be kept enabled if deemed necessary.
+
+
+    if (BuildConfig.DEBUG) {
+        Log.d(TAG, "Here's a log message");
+    }
+
+**Note:** Timber is the preferred logging method to be used. It handles the tagging for us, which saves us keeping a reference to a TAG.
+
+### Field Ordering
+
+Any fields declared at the top of a class file should be ordered in the following order:
+
+1. Enums
+2. Constants
+3. Dagger Injected fields
+4. Butterknife View Bindings
+5. private global variables
+6. public global variables
+
+For example:
+
+	public static enum {
+		ENUM_ONE, ENUM_TWO
+	}
+
+	public static final String KEY_NAME = "KEY_NAME";
+	public static final int COUNT_USER = 0;
+
+	@Inject SomeAdapter someAdapter;
+
+	@BindView(R.id.text_name) TextView nameText;
+	@BindView(R.id.image_photo) ImageView photoImage;
+
+	private int userCount;
+	private String errorMessage;
+
+	public int someCount;
+	public String someString;
+
+Using this ordering convention helps to keep field declarations grouped, which increases both the locating of and readability of said fields.
 
 ### Class member ordering
 
