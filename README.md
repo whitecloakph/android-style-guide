@@ -163,3 +163,17 @@ As a general rule you should try to group similar attributes together. A good wa
 3. Layout width and layout height
 4. Other layout attributes, sorted alphabetically
 5. Remaining attributes, sorted alphabetically
+
+## Tests
+
+### Espresso Tests
+
+Every Espresso test class usually targets an Activity, therefore the name should match the name of the targeted Activity followed by `Test`, e.g. `SignInActivityTest`
+
+When using the Espresso API it is a common practice to place chained methods in new lines.
+
+```java
+onView(withId(R.id.view))
+        .perform(scrollTo())
+        .check(matches(isDisplayed()))
+```
