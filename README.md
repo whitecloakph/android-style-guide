@@ -27,11 +27,11 @@ Class names are written in [UpperCamelCase](http://en.wikipedia.org/wiki/CamelCa
 
 For classes that extend an Android component, the name of the class should end with the name of the component; for example: `SignInActivity`, `SignInFragment`, `ImageUploaderService`, `ChangePasswordDialog`.
 
-### Resource
+### Resource Files
 
 Resources file names are written in __lowercase_underscore__.
 
-### Drawable
+#### Drawable Files
 
 Naming conventions for drawables:
 
@@ -67,7 +67,7 @@ Naming conventions for selector states:
 | Disabled     | `_disabled`     | `btn_order_disabled.9.png`  |
 | Selected     | `_selected`     | `btn_order_selected.9.png`  |
 
-### Layout
+#### Layout Files
 
 Layout files should match the name of the Android components that they are intended for but moving the top level component name to the beginning. For example, if we are creating a layout for the `SignInActivity`, the name of the layout file should be `activity_sign_in.xml`.
 
@@ -83,13 +83,13 @@ A slightly different case is when we are creating a layout that is going to be i
 
 Note that there are cases where these rules will not be possible to apply. For example, when creating layout files that are intended to be part of other layouts. In this case you should use the prefix `partial_`.
 
-### Menu
+#### Menu Files
 
 Similar to layout files, menu files should match the name of the component. For example, if we are defining a menu file that is going to be used in the `UserActivity`, then the name of the file should be `activity_user.xml`
 
 A good practice is to not include the word `menu` as part of the name because these files are already located in the `menu` directory.
 
-### Values
+#### Values Files
 
 Resource files in the values folder should be __plural__, e.g. `strings.xml`, `styles.xml`, `colors.xml`, `dimens.xml`, `attrs.xml`
 
