@@ -25,7 +25,7 @@ This style-guide is somewhat of a mash-up between the existing Java language sty
     - [Strings](#strings)
     - [Styles and Themes](#styles-and-themes)
   - [Attributes ordering](#attributes-ordering)
-- [Gradle Style]
+- [Gradle Style](#gradle-style)
   - [Dependencies](#dependencies)
     - [Versioning](#versioning)
     - [Grouping](#grouping)
